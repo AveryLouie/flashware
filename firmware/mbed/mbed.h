@@ -16,7 +16,7 @@
 #ifndef MBED_H
 #define MBED_H
 
-#define MBED_LIBRARY_VERSION 86
+#define MBED_LIBRARY_VERSION 112
 
 #include "platform.h"
 
@@ -25,7 +25,7 @@
 #include <time.h>
 
 // mbed Debug libraries
-#include "error.h"
+#include "mbed_error.h"
 #include "mbed_interface.h"
 
 // mbed Peripheral components
@@ -54,6 +54,9 @@
 #include "Timer.h"
 #include "Ticker.h"
 #include "Timeout.h"
+#include "LowPowerTimeout.h"
+#include "LowPowerTicker.h"
+#include "LowPowerTimer.h"
 #include "LocalFileSystem.h"
 #include "InterruptIn.h"
 #include "wait_api.h"
