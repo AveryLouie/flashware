@@ -30,3 +30,7 @@
 
 # Debug files
 *.dSYM/
+
+# Documentation stuff
+*.pdf
+*.html
