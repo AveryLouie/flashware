@@ -1,7 +1,5 @@
-//A blinky example for the misfit flash boards
-//turns on leds starting at 12 oclock and continues around the circle
-//the turns all leds off, then back on, then back off.
-//after that it polls the button and if it is pressed, it runs the light routine again
+//An accelerometer example for the flash board
+//illuminates the lowest LED on the board
 
 
 #include <stdbool.h>
