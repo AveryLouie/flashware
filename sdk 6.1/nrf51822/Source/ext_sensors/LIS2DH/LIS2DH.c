@@ -72,6 +72,8 @@ void reg_write(uint8_t reg, uint8_t val){
     SPI_TXRX(in,out,2);//do the thing
 }
 
+
+
 uint8_t reg_read(uint8_t reg){
     uint8_t in[2];
     uint8_t out[2];
@@ -83,16 +85,13 @@ uint8_t reg_read(uint8_t reg){
     return out[1];
 }
 
-uint16_t reg_read_two(uint8_t reg)
-{
-	uint8_t in[3];
-	uint8_t out[3];
-	uint16_t ret;
-	in[0] = reg | 0x80 | 0x40 ;
-	in[1] = 0x00;
-	in[2] = 0x00;
-	SPI_TXRX(in,out,3);
-	ret = (uint16_t)out[1] | (uint16_t)out[2] << 8;
-	return ret;
+uint8_t reg_write_ver(uint8_t reg, uint8_t val){
+	reg_write(reg, val);
 
+	if(reg_read(reg)!=val){
+		return 0;
+	}
+	else{
+		return 1;
+	}
 }

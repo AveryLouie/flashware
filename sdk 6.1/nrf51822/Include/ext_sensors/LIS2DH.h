@@ -61,8 +61,8 @@ void SPI_TXRX(uint8_t* transmit, uint8_t* receive, uint8_t bufsize);
 
 void reg_write(uint8_t reg, uint8_t val);
 
-uint8_t reg_read(uint8_t reg);
+uint8_t reg_write_ver(uint8_t reg, uint8_t val);
 
-uint16_t reg_read_two(uint8_t reg);
+uint8_t reg_read(uint8_t reg);
 
 #endif
