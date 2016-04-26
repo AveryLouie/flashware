@@ -11,7 +11,7 @@
 #include "simple_uart.h"
 #include "LIS2DH.h"
 
-// #define _SER_OUTPUT_
+#define _SER_OUTPUT_
 
 //from console.c
 void uart_put_dec32bit(uint32_t ww)  // ww is in the range [0 4294967295]
