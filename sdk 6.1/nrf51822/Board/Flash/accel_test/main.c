@@ -356,17 +356,18 @@ int main() {
 	
 	LED_INIT();
 	LEDS_OFF();  //default state is on
-    SPI_INIT();
+    ACCEL_SPI_INIT();
 
 	simple_uart_config(RTS, TX, CTS, RX, HWFC); //get our uart on
 
-    volatile uint8_t top;
-    volatile uint8_t bottom;
+    uint16_t accel_reg[3];
     volatile int16_t x;
     volatile int16_t y;
+    uint8_t top;
+    // uint8_t bottom;
 
     #ifdef _SER_OUTPUT_
-    volatile int16_t z;
+    // volatile int16_t z;
     #endif
 
     REL_CS();// in case of some kind of bad shutdown, explicitly release CS
@@ -415,44 +416,17 @@ int main() {
 
     while(1){
 
-        #ifdef _SER_OUTPUT_
+        update_xyz(accel_reg);
+        x = accel_reg[0];
+        y = accel_reg[1];
 
+        #ifdef _SER_OUTPUT_
         //some handy-dandy debug.  the Z is not used for this,
         //so it is debug-only
-
 		nrf_delay_ms(1000);
-
-        simple_uart_putstring((const uint8_t *)"\r\n\r\n");
-        bottom = reg_read(OUT_Z_L);
-        nrf_delay_ms(1);
-        top = reg_read(OUT_Z_H);
-        z = combine (top, bottom);
-        nrf_delay_ms(1);
-        simple_uart_putstring((const uint8_t *)"\r\nREGZ    ");
-        uart_put_decaccel((z));
-
-        #endif
-
-        bottom = reg_read(OUT_X_L);
-        nrf_delay_ms(1);
-        top = reg_read(OUT_X_H);
-        x = combine (top, bottom);
-
-        #ifdef _SER_OUTPUT_
-        nrf_delay_ms(1);
-        simple_uart_putstring((const uint8_t *)"\r\nREGX    ");
-        uart_put_decaccel((x));
-        #endif
-
-        bottom = reg_read(OUT_Y_L);
-        nrf_delay_ms(1);
-        top = reg_read(OUT_Y_H);
-        y = combine (top, bottom);
-
-        #ifdef _SER_OUTPUT_
-        nrf_delay_ms(1);
-        simple_uart_putstring((const uint8_t *)"\r\nREGY    ");
-        uart_put_decaccel((y));
+        uart_put_decaccel(accel_reg[0]);
+        uart_put_decaccel(accel_reg[1]);
+        uart_put_decaccel(accel_reg[2]);
         #endif
         
         //a little delay to help debounce the led

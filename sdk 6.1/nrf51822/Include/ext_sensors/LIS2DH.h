@@ -51,7 +51,7 @@
 
 
 //initialize the spi port, just the way the LIS2DH likes it
-void SPI_INIT();
+void ACCEL_SPI_INIT();
 
 void SEL_CS(); //set the CS line low
 
@@ -64,5 +64,7 @@ void reg_write(uint8_t reg, uint8_t val);
 uint8_t reg_write_ver(uint8_t reg, uint8_t val);
 
 uint8_t reg_read(uint8_t reg);
+
+void update_xyz(uint16_t* xyz);
 
 #endif

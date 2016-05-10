@@ -2,10 +2,11 @@
 
 #include "nrf_gpio.h"
 #include "boards.h"
+#include "LIS2DH.h"
 #include "nrf51_bitfields.h"
 #include "nrf_delay.h"
 
-void SPI_INIT(){
+void ACCEL_SPI_INIT(){
 	//set up gpio
 	nrf_gpio_cfg_output(SPI_CS);
 	nrf_gpio_cfg_output(SPI_MOSI);
@@ -94,4 +95,30 @@ uint8_t reg_write_ver(uint8_t reg, uint8_t val){
 	else{
 		return 1;
 	}
+}
+
+
+//updates a location in memory that should hold the XYZ accelerations
+void update_xyz(uint16_t* xyz){	
+	uint8_t bottom;
+	uint8_t top;
+    
+    bottom = reg_read(OUT_X_L);
+    nrf_delay_us(1);
+    top = reg_read(OUT_X_H);
+    xyz[0] =  (uint16_t) top<<8 | (uint16_t) bottom;
+    nrf_delay_us(1);
+
+    bottom = reg_read(OUT_Y_L);
+    nrf_delay_us(1);
+    top = reg_read(OUT_Y_H);
+    xyz[1] =  (uint16_t) top<<8 | (uint16_t) bottom;
+    nrf_delay_us(1);
+
+    bottom = reg_read(OUT_Z_L);
+    nrf_delay_us(1);
+    top = reg_read(OUT_Z_H);
+    xyz[2] =  (uint16_t) top<<8 | (uint16_t) bottom;
+    nrf_delay_us(1);
+
 }
