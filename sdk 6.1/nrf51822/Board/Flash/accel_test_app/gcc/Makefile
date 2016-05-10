@@ -4,9 +4,11 @@ BOARD := BOARD_FLASHBOARD
 CFLAGS += -DSPI_MASTER_0_ENABLE
 
 C_SOURCE_FILES += main.c
+C_SOURCE_FILES += nrf_soc.c
 C_SOURCE_FILES += nrf_delay.c  
 C_SOURCE_FILES += simple_uart.c
-C_SOURCE_FILES += LIS2DH.c
+C_SOURCE_FILES += spi_master.c
+C_SOURCE_FILES += LIS2DH_app.c
 
 
 SDK_PATH = ../../../../
@@ -22,3 +24,4 @@ include $(SDK_PATH)Source/templates/gcc/Makefile.common
 INCLUDEPATHS += -I"$(SDK_PATH)Include/app_common"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/sdk_soc"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/ext_sensors"
+INCLUDEPATHS += -I"$(SDK_PATH)Include"

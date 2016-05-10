@@ -24,7 +24,7 @@ C_SOURCE_FILES += app_gpiote.c
 C_SOURCE_FILES += app_button.c
 C_SOURCE_FILES += app_scheduler.c
 C_SOURCE_FILES += simple_uart.c
-C_SOURCE_FILES += LIS2DH.c
+C_SOURCE_FILES += LIS2DH_simple.c
 
 SDK_PATH = ../../../../../
 

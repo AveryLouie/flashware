@@ -50,21 +50,18 @@
 
 
 
-//initialize the spi port, just the way the LIS2DH likes it
-void ACCEL_SPI_INIT();
+void ACCEL_INIT();
 
-void SEL_CS(); //set the CS line low
-
-void REL_CS(); //set the CS line high
-
-void SPI_TXRX(uint8_t* transmit, uint8_t* receive, uint8_t bufsize);
+//send a byte, get a byte
+void ACCEL_TXRX(uint8_t* transmit, uint8_t* receive, uint8_t bufsize);
 
 void reg_write(uint8_t reg, uint8_t val);
 
-uint8_t reg_write_ver(uint8_t reg, uint8_t val);
-
 uint8_t reg_read(uint8_t reg);
 
+uint8_t reg_write_ver(uint8_t reg, uint8_t val);
+
+//updates a location in memory that should hold the XYZ accelerations
 void update_xyz(uint16_t* xyz);
 
 #endif

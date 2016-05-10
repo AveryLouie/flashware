@@ -4,14 +4,31 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+//application handler stuff
+#include "app_error.h"
+// #include "app_scheduler.h"
+// #include "app_timer.h"
+// #include "app_trace.h"
+#include "app_util_platform.h"
+#include "common.h"
 #include "nrf_delay.h"
 #include "nrf_gpio.h"
 #include "boards.h"
 #include "flashboard_utils.h"
 #include "simple_uart.h"
-#include "LIS2DH_simple.h"
+#include "LIS2DH_app.h"
+#include "nrf_soc.h"
 
 #define _SER_OUTPUT_
+
+void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t * p_file_name)
+{
+    for (;;)
+    {
+        NRF_GPIO->OUTCLR = (1<<LED_3);
+    }
+}
+
 
 //from console.c
 void uart_put_dec32bit(uint32_t ww)  // ww is in the range [0 4294967295]
@@ -258,49 +275,50 @@ int32_t dot(int16_t a, int16_t b, int16_t c, int16_t d){
 //the strategey is to find the dot product of the new XY vector with
 //a vector pointing at each led.  The one with the highest score is
 //illuminated
-void lowest_led(int16_t x, int16_t y){
-int32_t score = 0; //the current highest score for a led
-int32_t temp  = 0; //the temporary score to compare to the high score
-uint8_t  led  = 0; //the nuber of the LED to be illuminated
+void lowest_led(int16_t x, int16_t y)
+{
+    int32_t score = 0; //the current highest score for a led
+    int32_t temp  = 0; //the temporary score to compare to the high score
+    uint8_t  led  = 0; //the nuber of the LED to be illuminated
 
-//a vector of x and y values representing a vector pointing at each of the clock positions of the LED
-//this is based on a unit circle of 64 units
-int16_t vectx [12] = {64, 55, 32,  0, -32, -55, -64, -55, -32,   0,  32, 55};
-int16_t vecty [12] = { 0, 32, 55, 64,  55,  32,   0, -32, -55, -64, -55,-32};
+    //a vector of x and y values representing a vector pointing at each of the clock positions of the LED
+    //this is based on a unit circle of 64 units
+    int16_t vectx [12] = {64, 55, 32,  0, -32, -55, -64, -55, -32,   0,  32, 55};
+    int16_t vecty [12] = { 0, 32, 55, 64,  55,  32,   0, -32, -55, -64, -55,-32};
 
 
-//these are both two large by a factor of 16- use division to keep sign
-//roughly equivalent to >>4
-x = x/16;
-y = y/16;
+    //these are both two large by a factor of 16- use division to keep sign
+    //roughly equivalent to >>4
+    x = x/16;
+    y = y/16;
 
-//loose another factor of 16, roughly equivalent to >>4
-//this is because these are signed 16 bit numbers
-//the unit circle I chose has a unit of 2^6=64.
-//So now we can multiply by 64 and not overflow
+    //loose another factor of 16, roughly equivalent to >>4
+    //this is because these are signed 16 bit numbers
+    //the unit circle I chose has a unit of 2^6=64.
+    //So now we can multiply by 64 and not overflow
 
-x = x/16;
-y = y/16;
+    x = x/16;
+    y = y/16;
 
-//iterate through the different vectors and get the dot product
-for(int i=0; i<12; i++){
-temp=(dot(x,y,vectx[i],vecty[i]));
+    //iterate through the different vectors and get the dot product
+    for(int i=0; i<12; i++){
+    temp=(dot(x,y,vectx[i],vecty[i]));
 
-#ifdef _SER_OUTPUT_
-//some handy-dandy debug info
-simple_uart_putstring((const uint8_t*)"\r\nscore:");
-uart_put_dec32bit(temp);
-simple_uart_putstring((const uint8_t*)"   ");
-uart_put_decbyte(i);
-simple_uart_putstring((const uint8_t*)"\r\n");
+    #ifdef _SER_OUTPUT_
+    //some handy-dandy debug info
+    simple_uart_putstring((const uint8_t*)"\r\nscore:");
+    uart_put_dec32bit(temp);
+    simple_uart_putstring((const uint8_t*)"   ");
+    uart_put_decbyte(i);
+    simple_uart_putstring((const uint8_t*)"\r\n");
 
-#endif
+    #endif
 
-//if the new score is better, that is the new desired LED
-if (temp>score){
-    score=temp;
-    led=i;
-}
+        //if the new score is better, that is the new desired LED
+        if (temp>score){
+            score=temp;
+            led=i;
+        }
 
 }
 
@@ -308,55 +326,74 @@ if (temp>score){
 LEDS_OFF();
 
 //turn on the led we want.
-switch (led){
-    case 0:
-    NRF_GPIO->OUTCLR = (1<<LED_3);
-    break;
-    case 1:
-    NRF_GPIO->OUTCLR = (1<<LED_2);
-    break;
-    case 2:
-    NRF_GPIO->OUTCLR = (1<<LED_1);
-    break;
-    case 3:
-    NRF_GPIO->OUTCLR = (1<<LED_0);
-    break;
-    case 4:
-    NRF_GPIO->OUTCLR = (1<<LED_11);
-    break;
-    case 5:
-    NRF_GPIO->OUTCLR = (1<<LED_10);
-    break;
-    case 6:
-    NRF_GPIO->OUTCLR = (1<<LED_9);
-    break;
-    case 7:
-    NRF_GPIO->OUTCLR = (1<<LED_8);
-    break;
-    case 8:
-    NRF_GPIO->OUTCLR = (1<<LED_7);
-    break;
-    case 9:
-    NRF_GPIO->OUTCLR = (1<<LED_6);
-    break;
-    case 10:
-    NRF_GPIO->OUTCLR = (1<<LED_5);
-    break;
-    case 11:
-    NRF_GPIO->OUTCLR = (1<<LED_4);
-    break;
-}
+    switch (led)
+    {
+        case 0:
+        NRF_GPIO->OUTCLR = (1<<LED_3);
+        break;
+        case 1:
+        NRF_GPIO->OUTCLR = (1<<LED_2);
+        break;
+        case 2:
+        NRF_GPIO->OUTCLR = (1<<LED_1);
+        break;
+        case 3:
+        NRF_GPIO->OUTCLR = (1<<LED_0);
+        break;
+        case 4:
+        NRF_GPIO->OUTCLR = (1<<LED_11);
+        break;
+        case 5:
+        NRF_GPIO->OUTCLR = (1<<LED_10);
+        break;
+        case 6:
+        NRF_GPIO->OUTCLR = (1<<LED_9);
+        break;
+        case 7:
+        NRF_GPIO->OUTCLR = (1<<LED_8);
+        break;
+        case 8:
+        NRF_GPIO->OUTCLR = (1<<LED_7);
+        break;
+        case 9:
+        NRF_GPIO->OUTCLR = (1<<LED_6);
+        break;
+        case 10:
+        NRF_GPIO->OUTCLR = (1<<LED_5);
+        break;
+        case 11:
+        NRF_GPIO->OUTCLR = (1<<LED_4);
+        break;
+    }
 
 
 }
 
+// #define APP_TIMER_PRESCALER     0
+// #define APP_TIMER_MAX_TIMERS    1
+// #define APP_TIMER_OP_QUEUE_SIZE 1
+
+// static app_timer_id_t   accel_timer
+
+// static void timers_init(void)
+// {
+//     uint32_t err_code;
+
+//     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_MAX_TIMERS, APP_TIMER_OP_QUEUE_SIZE, true);
+
+//     err_code = app_timer_create(&
+//                                 APP_TIMER_MODE_REPEATED,
+//                                 measure_accel_timeout_handler);
+//     APP_ERROR_CHECK(err_code)
+
+// }
 
 
 int main() {
 	
 	LED_INIT();
 	LEDS_OFF();  //default state is on
-    ACCEL_SPI_INIT();
+    ACCEL_INIT();
 
 	simple_uart_config(RTS, TX, CTS, RX, HWFC); //get our uart on
 
@@ -369,8 +406,6 @@ int main() {
     #ifdef _SER_OUTPUT_
     // volatile int16_t z;
     #endif
-
-    REL_CS();// in case of some kind of bad shutdown, explicitly release CS
 
 
     //a bunch of configuration stuff, also read all the registers and print them.

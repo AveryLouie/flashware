@@ -47,3 +47,9 @@
 #define DEVICE_NAME       "Nightingale"
 #define MANIFACTURER_NAME "ACME"
 
+
+
+int main(void)
+{
+    
+}
