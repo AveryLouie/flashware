@@ -153,7 +153,7 @@ mergeflash:
 
 #should fix this file path at some point...
 merge:
-	sudo srec_cat /home/avery/Desktop/flashware/sdk\ 6.1/sd110/s110_nrf51822_7.3.0_softdevice.hex -i $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex -i −offset −maximum-addr -o $(OUTPUT_BINARY_DIRECTORY)/merged.hex -i
+	sudo srec_cat /home/avery/Desktop/flashware/sdk\ 6.1/sd110/s110_nrf51822_7.3.0_softdevice.hex -i $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex -i -o $(OUTPUT_BINARY_DIRECTORY)/merged.hex -i
 
 flash:
 	make
