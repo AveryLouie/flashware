@@ -6,10 +6,12 @@
 #include <stdint.h>
 //application handler stuff
 #include "app_error.h"
-// #include "app_scheduler.h"
-// #include "app_timer.h"
-// #include "app_trace.h"
 #include "app_util_platform.h"
+#include "app_util.h"
+#include "app_scheduler.h"
+#include "app_timer.h"
+#include "app_trace.h"
+#include "nordic_common.h"
 #include "common.h"
 #include "nrf_delay.h"
 #include "nrf_gpio.h"
@@ -23,9 +25,20 @@
 
 void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t * p_file_name)
 {
-    for (;;)
+    for (;;)//FREAK OUUTTTTTTT!!!!!!!
     {
+        NRF_GPIO->OUTCLR = (1<<LED_1);
+        NRF_GPIO->OUTCLR = (1<<LED_2);
         NRF_GPIO->OUTCLR = (1<<LED_3);
+        NRF_GPIO->OUTCLR = (1<<LED_4);
+        NRF_GPIO->OUTCLR = (1<<LED_5);
+        NRF_GPIO->OUTCLR = (1<<LED_6);
+        NRF_GPIO->OUTCLR = (1<<LED_7);
+        NRF_GPIO->OUTCLR = (1<<LED_8);
+        NRF_GPIO->OUTCLR = (1<<LED_9);
+        NRF_GPIO->OUTCLR = (1<<LED_10);
+        NRF_GPIO->OUTCLR = (1<<LED_11);
+        NRF_GPIO->OUTCLR = (1<<LED_0);
     }
 }
 
@@ -369,24 +382,43 @@ LEDS_OFF();
 
 }
 
-// #define APP_TIMER_PRESCALER     0
-// #define APP_TIMER_MAX_TIMERS    1
-// #define APP_TIMER_OP_QUEUE_SIZE 1
+#define APP_TIMER_PRESCALER     0
+#define APP_TIMER_MAX_TIMERS    1
+#define APP_TIMER_OP_QUEUE_SIZE 1
+#define ACCEL_MEAS_INT          APP_TIMER_TICKS(2, APP_TIMER_PRESCALER) //measure every 2 ms
 
-// static app_timer_id_t   accel_timer
+static app_timer_id_t   accel_timer_id;
 
-// static void timers_init(void)
-// {
-//     uint32_t err_code;
+volatile uint16_t accel_reg[3];
 
-//     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_MAX_TIMERS, APP_TIMER_OP_QUEUE_SIZE, true);
+static void measure_accel_timeout_handler(void* p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    update_xyz(accel_reg);
+}
 
-//     err_code = app_timer_create(&
-//                                 APP_TIMER_MODE_REPEATED,
-//                                 measure_accel_timeout_handler);
-//     APP_ERROR_CHECK(err_code)
 
-// }
+static void timers_init(void)
+{
+    uint32_t err_code;
+
+    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_MAX_TIMERS, APP_TIMER_OP_QUEUE_SIZE, true);
+
+    err_code = app_timer_create(& accel_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                measure_accel_timeout_handler);
+    APP_ERROR_CHECK(err_code);
+
+}
+
+static void timers_start(void)
+{
+    uint32_t err_code;
+
+    err_code = app_timer_start(accel_timer_id, ACCEL_MEAS_INT ,NULL);
+
+    APP_ERROR_CHECK(err_code);
+}
 
 
 int main() {
@@ -397,7 +429,7 @@ int main() {
 
 	simple_uart_config(RTS, TX, CTS, RX, HWFC); //get our uart on
 
-    uint16_t accel_reg[3];
+    
     volatile int16_t x;
     volatile int16_t y;
     uint8_t top;
@@ -449,11 +481,14 @@ int main() {
     simple_uart_putstring((const uint8_t *)"\r\ncr6 ");
     uart_put_decbyte(top);
 
+    timers_init();
+    timers_start();
+
     while(1){
 
-        update_xyz(accel_reg);
-        x = accel_reg[0];
-        y = accel_reg[1];
+        // update_xyz(accel_reg);
+        // x = accel_reg[0];
+        // y = accel_reg[1];
 
         #ifdef _SER_OUTPUT_
         //some handy-dandy debug.  the Z is not used for this,

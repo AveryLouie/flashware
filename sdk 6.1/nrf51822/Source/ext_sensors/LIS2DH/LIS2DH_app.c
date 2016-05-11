@@ -1,11 +1,13 @@
 //a library for talking to the LIS2DH accelerometer, as positioned on the flash board
 
+//NB SPI_MASTER_0_ENABLE must be set in makefile (or elsewere)
+//this is done conventiently with "CFLAGS += -DSPI_MASTER_0_ENABLE"
+
 #include "nrf_gpio.h"
 #include "boards.h"
 #include "LIS2DH_app.h"
 #include "nrf51_bitfields.h"
 #include "nrf_delay.h"
-
 #include "spi_master.h"
 
 void ACCEL_INIT(){
@@ -21,6 +23,8 @@ void ACCEL_INIT(){
 		.SPI_CONFIG_CPHA   = SPI_CONFIG_CPHA_Leading,
 		.SPI_DisableAllIRQ = 0,
 	};
+	nrf_gpio_cfg_output(SPI_CS);
+	nrf_gpio_pin_set(SPI_CS);
 	spi_master_open(SPI_MASTER_0, &config); //actually open the SPI port
 
 
@@ -68,7 +72,7 @@ uint8_t reg_write_ver(uint8_t reg, uint8_t val){
 
 
 //updates a location in memory that should hold the XYZ accelerations
-void update_xyz(uint16_t* xyz){	
+void update_xyz(volatile uint16_t* xyz){	
 	uint8_t bottom;
 	uint8_t top;
     

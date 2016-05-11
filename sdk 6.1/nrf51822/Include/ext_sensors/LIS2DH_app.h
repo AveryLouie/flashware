@@ -62,6 +62,6 @@ uint8_t reg_read(uint8_t reg);
 uint8_t reg_write_ver(uint8_t reg, uint8_t val);
 
 //updates a location in memory that should hold the XYZ accelerations
-void update_xyz(uint16_t* xyz);
+void update_xyz(volatile uint16_t* xyz);
 
 #endif
