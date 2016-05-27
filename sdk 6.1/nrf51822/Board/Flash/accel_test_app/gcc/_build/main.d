@@ -1,9 +1,11 @@
 _build/main.o: ../main.c \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h \
- /usr/include/newlib/stdint.h \
- /usr/include/newlib/machine/_default_types.h \
- /usr/include/newlib/sys/features.h /usr/include/newlib/sys/_intsup.h \
+ /usr/arm-none-eabi/include/stdint.h \
+ /usr/arm-none-eabi/include/machine/_default_types.h \
+ /usr/arm-none-eabi/include/sys/features.h \
+ /usr/arm-none-eabi/include/sys/_intsup.h \
+ /usr/arm-none-eabi/include/sys/_stdint.h \
  ../../../../Include/app_common/app_error.h \
  ../../../../Include/sdk_soc/nrf_error.h \
  ../../../../Include/sd_common/app_util_platform.h \
@@ -14,16 +16,22 @@ _build/main.o: ../main.c \
  ../../../../Include/app_common/app_util.h \
  ../../../../Include/app_common/app_scheduler.h \
  ../../../../Include/app_common/app_error.h \
- ../../../../Include/app_common/app_timer.h /usr/include/newlib/stdio.h \
- /usr/include/newlib/_ansi.h /usr/include/newlib/newlib.h \
- /usr/include/newlib/sys/config.h /usr/include/newlib/machine/ieeefp.h \
- /usr/include/newlib/sys/cdefs.h \
+ ../../../../Include/app_common/app_timer.h \
+ /usr/arm-none-eabi/include/stdio.h /usr/arm-none-eabi/include/_ansi.h \
+ /usr/arm-none-eabi/include/newlib.h \
+ /usr/arm-none-eabi/include/sys/config.h \
+ /usr/arm-none-eabi/include/machine/ieeefp.h \
+ /usr/arm-none-eabi/include/sys/cdefs.h \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stddef.h \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdarg.h \
- /usr/include/newlib/sys/reent.h /usr/include/newlib/_ansi.h \
- /usr/include/newlib/sys/_types.h /usr/include/newlib/machine/_types.h \
- /usr/include/newlib/sys/lock.h /usr/include/newlib/sys/types.h \
- /usr/include/newlib/machine/types.h /usr/include/newlib/sys/stdio.h \
+ /usr/arm-none-eabi/include/sys/reent.h \
+ /usr/arm-none-eabi/include/_ansi.h \
+ /usr/arm-none-eabi/include/sys/_types.h \
+ /usr/arm-none-eabi/include/machine/_types.h \
+ /usr/arm-none-eabi/include/sys/lock.h \
+ /usr/arm-none-eabi/include/sys/types.h \
+ /usr/arm-none-eabi/include/machine/types.h \
+ /usr/arm-none-eabi/include/sys/stdio.h \
  ../../../../Include/app_common/app_util.h \
  ../../../../Include/app_common/app_scheduler.h \
  ../../../../Include/app_common/app_trace.h \
@@ -37,5 +45,7 @@ _build/main.o: ../main.c \
  ../../../../Include/flashboard_utils.h ../../../../Include/nrf_gpio.h \
  ../../../../Include/boards.h ../../../../Include/simple_uart.h \
  ../../../../Include/ext_sensors/LIS2DH_app.h \
- /usr/include/newlib/stdlib.h /usr/include/newlib/machine/stdlib.h \
- /usr/include/newlib/alloca.h ../../../../Include/sdk_soc/nrf_soc.h
+ /usr/arm-none-eabi/include/stdlib.h \
+ /usr/arm-none-eabi/include/machine/stdlib.h \
+ /usr/arm-none-eabi/include/alloca.h \
+ ../../../../Include/sdk_soc/nrf_soc.h

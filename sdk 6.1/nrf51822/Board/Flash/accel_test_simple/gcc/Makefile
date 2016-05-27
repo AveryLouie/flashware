@@ -6,7 +6,7 @@ CFLAGS += -DSPI_MASTER_0_ENABLE
 C_SOURCE_FILES += main.c
 C_SOURCE_FILES += nrf_delay.c  
 C_SOURCE_FILES += simple_uart.c
-C_SOURCE_FILES += LIS2DH.c
+C_SOURCE_FILES += LIS2DH_simple.c
 
 
 SDK_PATH = ../../../../

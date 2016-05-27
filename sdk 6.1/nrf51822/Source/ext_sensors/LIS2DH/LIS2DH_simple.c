@@ -2,7 +2,7 @@
 
 #include "nrf_gpio.h"
 #include "boards.h"
-#include "LIS2DH.h"
+#include "LIS2DH_simple.h"
 #include "nrf51_bitfields.h"
 #include "nrf_delay.h"
 

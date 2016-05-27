@@ -19,7 +19,7 @@ OUTPUT_FILENAME := accel_test
 DEVICE_VARIANT := xxaa
 #DEVICE_VARIANT := xxab
 
-#USE_SOFTDEVICE := S110
+# USE_SOFTDEVICE := S110
 #USE_SOFTDEVICE := S210
 
 include $(SDK_PATH)Source/templates/gcc/Makefile.common

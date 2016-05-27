@@ -1,7 +1,7 @@
 
 
-#ifndef LIS2DH_H_
-#define LIS2DH_H_
+#ifndef LIS2DH_SIMPLE_H_
+#define LIS2DH_SIMPLE_H_
 
 #include <stdint.h>
 #include <stdlib.h>

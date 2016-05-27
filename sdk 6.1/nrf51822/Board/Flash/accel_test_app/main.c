@@ -383,9 +383,9 @@ LEDS_OFF();
 }
 
 #define APP_TIMER_PRESCALER     0
-#define APP_TIMER_MAX_TIMERS    1
-#define APP_TIMER_OP_QUEUE_SIZE 1
-#define ACCEL_MEAS_INT          APP_TIMER_TICKS(2, APP_TIMER_PRESCALER) //measure every 2 ms
+#define APP_TIMER_MAX_TIMERS    4
+#define APP_TIMER_OP_QUEUE_SIZE 4
+#define ACCEL_MEAS_INT          APP_TIMER_TICKS(200, APP_TIMER_PRESCALER) //measure every 2 ms
 
 static app_timer_id_t   accel_timer_id;
 
@@ -393,8 +393,9 @@ volatile uint16_t accel_reg[3];
 
 static void measure_accel_timeout_handler(void* p_context)
 {
+	NRF_GPIO->OUTCLR = (1<<LED_1);
+	update_xyz(accel_reg);
     UNUSED_PARAMETER(p_context);
-    update_xyz(accel_reg);
 }
 
 
@@ -402,7 +403,7 @@ static void timers_init(void)
 {
     uint32_t err_code;
 
-    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_MAX_TIMERS, APP_TIMER_OP_QUEUE_SIZE, true);
+    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_MAX_TIMERS, APP_TIMER_OP_QUEUE_SIZE, false);
 
     err_code = app_timer_create(& accel_timer_id,
                                 APP_TIMER_MODE_REPEATED,
@@ -418,6 +419,8 @@ static void timers_start(void)
     err_code = app_timer_start(accel_timer_id, ACCEL_MEAS_INT ,NULL);
 
     APP_ERROR_CHECK(err_code);
+
+
 }
 
 
@@ -430,8 +433,8 @@ int main() {
 	simple_uart_config(RTS, TX, CTS, RX, HWFC); //get our uart on
 
     
-    volatile int16_t x;
-    volatile int16_t y;
+    // volatile int16_t x;
+    // volatile int16_t y;
     uint8_t top;
     // uint8_t bottom;
 
@@ -500,8 +503,8 @@ int main() {
         #endif
         
         //a little delay to help debounce the led
-        nrf_delay_ms(25);
-        lowest_led(x,y);
+        // nrf_delay_ms(25);
+        // lowest_led(x,y);
 
 	}
 }
