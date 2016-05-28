@@ -391,6 +391,27 @@ static app_timer_id_t   accel_timer_id;
 
 volatile uint16_t accel_reg[3];
 
+#define LFCLK_FREQUENCY           (32768UL)                               /**< LFCLK frequency in Hertz, constant. */
+#define RTC_FREQUENCY             (8UL)                                   /**< Required RTC working clock RTC_FREQUENCY Hertz. Changable. */
+#define COMPARE_COUNTERTIME       (3UL)                                   /**< Get Compare event COMPARE_TIME seconds after the counter starts from 0. */
+#define COUNTER_PRESCALER         ((LFCLK_FREQUENCY / RTC_FREQUENCY) - 1)   /* f = LFCLK/(prescaler + 1) */
+
+
+/** @brief Function starting the internal LFCLK XTAL oscillator.
+ */
+static void lfclk_config(void)
+{
+    NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
+    NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
+    NRF_CLOCK->TASKS_LFCLKSTART    = 1;
+    while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0)
+    {
+        //Do nothing.
+    }
+    NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
+}
+
+
 static void measure_accel_timeout_handler(void* p_context)
 {
 	NRF_GPIO->OUTCLR = (1<<LED_1);
@@ -484,8 +505,11 @@ int main() {
     simple_uart_putstring((const uint8_t *)"\r\ncr6 ");
     uart_put_decbyte(top);
 
+    lfclk_config();
     timers_init();
     timers_start();
+
+    // uint32_t ticks;
 
     while(1){
 
@@ -496,10 +520,13 @@ int main() {
         #ifdef _SER_OUTPUT_
         //some handy-dandy debug.  the Z is not used for this,
         //so it is debug-only
-		nrf_delay_ms(1000);
+		// nrf_delay_ms(100);
+  //       app_timer_cnt_get(&ticks);
+  //       uart_put_dec32bit(ticks);
         uart_put_decaccel(accel_reg[0]);
         uart_put_decaccel(accel_reg[1]);
         uart_put_decaccel(accel_reg[2]);
+        simple_uart_putstring((uint8_t*)"\r\n");
         #endif
         
         //a little delay to help debounce the led
