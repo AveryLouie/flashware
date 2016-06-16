@@ -414,7 +414,6 @@ static void lfclk_config(void)
 
 static void measure_accel_timeout_handler(void* p_context)
 {
-	NRF_GPIO->OUTCLR = (1<<LED_1);
 	update_xyz(accel_reg);
     UNUSED_PARAMETER(p_context);
 }
@@ -454,8 +453,8 @@ int main() {
 	simple_uart_config(RTS, TX, CTS, RX, HWFC); //get our uart on
 
     
-    // volatile int16_t x;
-    // volatile int16_t y;
+    volatile int16_t x;
+    volatile int16_t y;
     uint8_t top;
     // uint8_t bottom;
 
@@ -513,9 +512,9 @@ int main() {
 
     while(1){
 
-        // update_xyz(accel_reg);
-        // x = accel_reg[0];
-        // y = accel_reg[1];
+        update_xyz(accel_reg);
+        x = accel_reg[0];
+        y = accel_reg[1];
 
         #ifdef _SER_OUTPUT_
         //some handy-dandy debug.  the Z is not used for this,
@@ -531,7 +530,7 @@ int main() {
         
         //a little delay to help debounce the led
         // nrf_delay_ms(25);
-        // lowest_led(x,y);
+        lowest_led(x,y);
 
 	}
 }

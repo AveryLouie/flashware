@@ -51,23 +51,22 @@
 #define HDR_9  20
 #define HDR_10 17
 
-#define RX   14
-#define TX   20
-#define CTS  13
-#define RTS  15
-#define HWFC false
+// #define RX   14
+// #define TX   20
+// #define CTS  13
+// #define RTS  15
+// #define HWFC false
 
 #define SPI_MOSI 4
 #define SPI_MISO 3
 #define SPI_CS   2
 #define SPI_CLK  5
 
-//probably none of this is useful
-// #define RX_PIN_NUMBER  16    // UART RX pin number.
-// #define TX_PIN_NUMBER  17    // UART TX pin number.
-// #define CTS_PIN_NUMBER 18    // UART Clear To Send pin number. Not used if HWFC is set to false. 
-// #define RTS_PIN_NUMBER 19    // UART Request To Send pin number. Not used if HWFC is set to false. 
-// #define HWFC           false // UART hardware flow control.
+#define RX_PIN_NUMBER  14    // UART RX pin number.
+#define TX_PIN_NUMBER  20    // UART TX pin number.
+#define CTS_PIN_NUMBER 13    // UART Clear To Send pin number. Not used if HWFC is set to false. 
+#define RTS_PIN_NUMBER 15    // UART Request To Send pin number. Not used if HWFC is set to false. 
+#define HWFC           false // UART hardware flow control.
 
 //this might be useful and or true
 // #define SPIS_MISO_PIN  20    // SPI MISO signal. 

@@ -1,34 +1,31 @@
-TARGET_CHIP := NRF51822_QFAA_CA
+TARGET_CHIP := NRF51822_QFAA_G2
 BOARD := BOARD_FLASHBOARD
 
 # application source
 C_SOURCE_FILES += main.c
 
-C_SOURCE_FILES += ble_dis.c
-C_SOURCE_FILES += ble_bas.c
-C_SOURCE_FILES += ble_hids.c
-
 C_SOURCE_FILES += ble_srv_common.c
+
+C_SOURCE_FILES += ble_advdata.c
 C_SOURCE_FILES += ble_sensorsim.c
 C_SOURCE_FILES += softdevice_handler.c
-C_SOURCE_FILES += ble_advdata.c
 C_SOURCE_FILES += ble_debug_assert_handler.c
 C_SOURCE_FILES += ble_error_log.c
 C_SOURCE_FILES += ble_conn_params.c
 C_SOURCE_FILES += pstorage.c
 C_SOURCE_FILES += crc16.c
 C_SOURCE_FILES += app_timer.c
-C_SOURCE_FILES += device_manager_peripheral.c
 C_SOURCE_FILES += app_trace.c
-C_SOURCE_FILES += app_gpiote.c
-C_SOURCE_FILES += app_button.c
-C_SOURCE_FILES += app_scheduler.c
 C_SOURCE_FILES += simple_uart.c
-C_SOURCE_FILES += LIS2DH_simple.c
+C_SOURCE_FILES += app_scheduler.c
+C_SOURCE_FILES += app_button.c
+C_SOURCE_FILES += app_gpiote.c
+C_SOURCE_FILES += ble_accel_svc.c
+
 
 SDK_PATH = ../../../../../
 
-OUTPUT_FILENAME := ble_app_hids_keyboard
+OUTPUT_FILENAME := ble_app_template
 
 DEVICE_VARIANT := xxaa
 #DEVICE_VARIANT := xxab
@@ -36,7 +33,7 @@ DEVICE_VARIANT := xxaa
 USE_SOFTDEVICE := S110
 #USE_SOFTDEVICE := S210
 
-CFLAGS := -DDEBUG_NRF_USER -DBLE_STACK_SUPPORT_REQD
+CFLAGS := -DDEBUG_NRF_USER -DBLE_STACK_SUPPORT_REQD -DENABLE_DEBUG_LOG_SUPPORT
 
 # we do not use heap in this app
 ASMFLAGS := -D__HEAP_SIZE=0
@@ -49,14 +46,13 @@ LDFLAGS := -Wl,--gc-sections
 
 INCLUDEPATHS += -I"$(SDK_PATH)Include/s110"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/ble"
-INCLUDEPATHS += -I"$(SDK_PATH)Include/ble/device_manager"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/ble/ble_services"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/app_common"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/sd_common"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/sdk"
+INCLUDEPATHS += -I"$(SDK_PATH)Include/boards"
 
 C_SOURCE_PATHS += $(SDK_PATH)Source/ble
-C_SOURCE_PATHS += $(SDK_PATH)Source/ble/device_manager
 C_SOURCE_PATHS += $(SDK_PATH)Source/app_common
 C_SOURCE_PATHS += $(SDK_PATH)Source/sd_common
 

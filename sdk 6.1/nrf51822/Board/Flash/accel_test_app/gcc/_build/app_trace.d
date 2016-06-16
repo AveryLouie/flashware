@@ -1,27 +1,18 @@
 _build/app_trace.o: ../../../..//Source/app_common/app_trace.c \
- /usr/arm-none-eabi/include/stdio.h /usr/arm-none-eabi/include/_ansi.h \
- /usr/arm-none-eabi/include/newlib.h \
- /usr/arm-none-eabi/include/sys/config.h \
- /usr/arm-none-eabi/include/machine/ieeefp.h \
- /usr/arm-none-eabi/include/sys/features.h \
- /usr/arm-none-eabi/include/sys/cdefs.h \
- /usr/arm-none-eabi/include/machine/_default_types.h \
+ /usr/include/newlib/stdio.h /usr/include/newlib/_ansi.h \
+ /usr/include/newlib/newlib.h /usr/include/newlib/sys/config.h \
+ /usr/include/newlib/machine/ieeefp.h /usr/include/newlib/sys/features.h \
+ /usr/include/newlib/sys/cdefs.h \
+ /usr/include/newlib/machine/_default_types.h \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stddef.h \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdarg.h \
- /usr/arm-none-eabi/include/sys/reent.h \
- /usr/arm-none-eabi/include/_ansi.h \
- /usr/arm-none-eabi/include/sys/_types.h \
- /usr/arm-none-eabi/include/machine/_types.h \
- /usr/arm-none-eabi/include/sys/lock.h \
- /usr/arm-none-eabi/include/sys/types.h \
- /usr/arm-none-eabi/include/sys/_stdint.h \
- /usr/arm-none-eabi/include/machine/types.h \
- /usr/arm-none-eabi/include/sys/stdio.h \
+ /usr/include/newlib/sys/reent.h /usr/include/newlib/_ansi.h \
+ /usr/include/newlib/sys/_types.h /usr/include/newlib/machine/_types.h \
+ /usr/include/newlib/sys/lock.h /usr/include/newlib/sys/types.h \
+ /usr/include/newlib/machine/types.h /usr/include/newlib/sys/stdio.h \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h \
- /usr/arm-none-eabi/include/stdint.h \
- /usr/arm-none-eabi/include/sys/_intsup.h \
- /usr/arm-none-eabi/include/string.h \
- /usr/arm-none-eabi/include/sys/string.h \
+ /usr/include/newlib/stdint.h /usr/include/newlib/sys/_intsup.h \
+ /usr/include/newlib/string.h /usr/include/newlib/sys/string.h \
  ../../../../Include/app_common/app_uart.h \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h \
  ../../../../Include/sd_common/app_util_platform.h \
