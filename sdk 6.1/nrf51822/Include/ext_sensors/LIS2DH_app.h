@@ -47,9 +47,6 @@
 #define Act_DUR         0x3F
 
 //Mode defs
-
-
-
 void ACCEL_INIT();
 
 //send a byte, get a byte

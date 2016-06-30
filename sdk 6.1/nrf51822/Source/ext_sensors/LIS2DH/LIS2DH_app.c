@@ -9,9 +9,10 @@
 #include "nrf51_bitfields.h"
 #include "nrf_delay.h"
 #include "spi_master.h"
+#include "app_error.h"
 
 void ACCEL_INIT(){
-
+	uint32_t err_code;
 	const spi_master_config_t config={
 		.SPI_Freq          = SPI_FREQUENCY_FREQUENCY_M8, 
 		.SPI_Pin_SCK       = SPI_CLK,
@@ -25,9 +26,8 @@ void ACCEL_INIT(){
 	};
 	nrf_gpio_cfg_output(SPI_CS);
 	nrf_gpio_pin_set(SPI_CS);
-	spi_master_open(SPI_MASTER_0, &config); //actually open the SPI port
-
-
+	err_code = spi_master_open(SPI_MASTER_0, &config); //actually open the SPI port
+	APP_ERROR_CHECK(err_code);
 }
 
 //send a byte, get a byte

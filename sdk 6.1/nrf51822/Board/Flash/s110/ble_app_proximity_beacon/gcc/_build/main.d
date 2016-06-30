@@ -72,4 +72,5 @@ _build/main.o: ../main.c \
  ../../../../../Include/app_common/app_trace.h \
  ../../../../../Include/ble/ble_services/ble_accel_svc.h \
  ../../../../../Include/ble/ble_services/ble_srv_common.h \
+ ../../../../../Include/ext_sensors/LIS2DH_app.h \
  ../../../../../Include/simple_uart.h

@@ -21,6 +21,8 @@ C_SOURCE_FILES += app_scheduler.c
 C_SOURCE_FILES += app_button.c
 C_SOURCE_FILES += app_gpiote.c
 C_SOURCE_FILES += ble_accel_svc.c
+C_SOURCE_FILES += LIS2DH_app.c
+C_SOURCE_FILES += spi_master.c
 
 
 SDK_PATH = ../../../../../
@@ -33,7 +35,8 @@ DEVICE_VARIANT := xxaa
 USE_SOFTDEVICE := S110
 #USE_SOFTDEVICE := S210
 
-CFLAGS := -DDEBUG_NRF_USER -DBLE_STACK_SUPPORT_REQD -DENABLE_DEBUG_LOG_SUPPORT
+CFLAGS := -DDEBUG_NRF_USER -DBLE_STACK_SUPPORT_REQD -DENABLE_DEBUG_LOG_SUPPORT -DSPI_MASTER_0_ENABLE
+
 
 # we do not use heap in this app
 ASMFLAGS := -D__HEAP_SIZE=0
@@ -44,6 +47,7 @@ CFLAGS += -ffunction-sections
 # let linker to dump unused sections
 LDFLAGS := -Wl,--gc-sections
 
+INCLUDEPATHS += -I"$(SDK_PATH)Include"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/s110"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/ble"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/ble/ble_services"
@@ -51,6 +55,7 @@ INCLUDEPATHS += -I"$(SDK_PATH)Include/app_common"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/sd_common"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/sdk"
 INCLUDEPATHS += -I"$(SDK_PATH)Include/boards"
+INCLUDEPATHS += -I"$(SDK_PATH)Include/ext_sensors"
 
 C_SOURCE_PATHS += $(SDK_PATH)Source/ble
 C_SOURCE_PATHS += $(SDK_PATH)Source/app_common

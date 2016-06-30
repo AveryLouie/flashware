@@ -48,10 +48,11 @@
 #include "pstorage.h"
 #include "app_trace.h"
 #include "ble_accel_svc.h"
+#include "LIS2DH_app.h"
 #include "simple_uart.h"
 
 
-#define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
+#define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include or not the service_changed characteristic. if not enabled, the server's dataacce cannot be changed for the lifetime of the device*/
 
 #define WAKEUP_BUTTON_PIN               BUTTON_0                                    /**< Button used to wake up the application. */
 // YOUR_JOB: Define any other buttons to be used by the applications:
@@ -69,8 +70,9 @@
 
 // YOUR_JOB: Modify these according to requirements.
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
-#define APP_TIMER_MAX_TIMERS            2                                           /**< Maximum number of simultaneously created timers. */
+#define APP_TIMER_MAX_TIMERS            4                                           /**< Maximum number of simultaneously created timers. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
+#define ACC_TIMER_INTERVAL              9                                          /**< Number of RTC ticks till next accel meas */
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(500, UNIT_1_25_MS)            /**< Minimum acceptable connection interval (0.5 seconds). */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(1000, UNIT_1_25_MS)           /**< Maximum acceptable connection interval (1 second). */
@@ -102,8 +104,15 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 #define SCHED_MAX_EVENT_DATA_SIZE       sizeof(app_timer_event_t)                   /**< Maximum size of scheduler events. Note that scheduler BLE stack events do not contain any data, as the events are being pulled from the stack in the event handler. */
 #define SCHED_QUEUE_SIZE                10                                          /**< Maximum number of events in the scheduler queue. */
 
-static ble_bas_t m_bas;  //batery service ID structure
+//lfclk/RTC stuff
+// #define LFCLK_FREQUENCY           (32768UL)                               /**< LFCLK frequency in Hertz, constant. */
+// #define RTC_FREQUENCY             (8UL)                                   /**< Required RTC working clock RTC_FREQUENCY Hertz. Changable. */
+// #define COMPARE_COUNTERTIME       (10UL)                                   /**< Get Compare event COMPARE_TIME seconds after the counter starts from 0. */
+// #define COUNTER_PRESCALER         ((LFCLK_FREQUENCY / RTC_FREQUENCY) - 1)   /* f = LFCLK/(prescaler + 1) */
 
+static ble_acc_t m_acc;          //accelerometer service ID structure
+static app_timer_id_t acc_timer_id; //accelerometer timer
+volatile uint16_t xyz[3];
 
 // Persistent storage system event handler
 void pstorage_sys_event_handler (uint32_t p_evt);
@@ -132,6 +141,7 @@ void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t * p
 
     // On assert, the system can only recover with a reset.
     simple_uart_putstring((const uint8_t*) "app error\r\n");
+    simple_uart_putstring(p_file_name);
     NVIC_SystemReset();
 }
 
@@ -168,6 +178,62 @@ static void service_error_handler(uint32_t nrf_error)
     APP_ERROR_HANDLER(nrf_error);
 } */
 
+static void accel_timeout_handler(void* p_context)
+{
+    update_xyz(xyz);
+    ble_acc_accel_level_update(&m_acc, xyz[1]);
+    UNUSED_PARAMETER(p_context);
+    simple_uart_putstring((const uint8_t*) "acc\r\n");
+}
+
+
+static void ext_sensors_init(void)
+{
+    simple_uart_putstring((const uint8_t*) "acc1\r\n");
+    ACCEL_INIT();
+    simple_uart_putstring((const uint8_t*) "acc2\r\n");
+    //     while(reg_write_ver(CTRL_REG1, 0x97)!=1){
+    //     simple_uart_putstring((const uint8_t*)"retrying cr1 tx\r\n");
+    // }//0b10010111//0b01110111
+    // nrf_delay_ms(10);
+    // top = reg_read(CTRL_REG1);
+    // simple_uart_putstring((const uint8_t *)"\r\ncr1 ");
+    // uart_put_decbyte(top);
+
+    // while(reg_write_ver(CTRL_REG2, 0x80)!=1){
+    //     simple_uart_putstring((const uint8_t*)"retrying cr2 tx\r\n");
+    // }//10000000
+    // nrf_delay_ms(10);
+    // top = reg_read(CTRL_REG2);
+    // simple_uart_putstring((const uint8_t *)"\r\ncr2 ");
+    // uart_put_decbyte(top);
+
+    // nrf_delay_ms(10);
+    // top = reg_read(CTRL_REG3);
+    // simple_uart_putstring((const uint8_t *)"\r\ncr3 ");
+    // uart_put_decbyte(top);
+
+    // while(reg_write_ver(CTRL_REG4, 0x08)!=1){
+    //     simple_uart_putstring((const uint8_t*)"retrying cr4 tx\r\n");
+    // }//0b00000000
+    // nrf_delay_ms(10);
+    // top = reg_read(CTRL_REG4);
+    // simple_uart_putstring((const uint8_t *)"\r\ncr4 ");
+    // uart_put_decbyte(top);
+
+    // nrf_delay_ms(10);
+    // top = reg_read(CTRL_REG5);
+    // simple_uart_putstring((const uint8_t *)"\r\ncr5 ");
+    // uart_put_decbyte(top);
+
+    // nrf_delay_ms(10);
+    // top = reg_read(CTRL_REG6);
+    // simple_uart_putstring((const uint8_t *)"\r\ncr6 ");
+    // uart_put_decbyte(top);
+
+    accel_timeout_handler(NULL);
+}
+
 
 /**@brief Function for the LEDs initialization.
  *
@@ -189,6 +255,7 @@ static void leds_init(void)
  */
 static void timers_init(void)
 {
+    uint32_t err_code;
     // Initialize timer module, making it use the scheduler
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_MAX_TIMERS, APP_TIMER_OP_QUEUE_SIZE, true);
 
@@ -198,6 +265,9 @@ static void timers_init(void)
                  one.
     err_code = app_timer_create(&m_app_timer_id, APP_TIMER_MODE_REPEATED, timer_timeout_handler);
     APP_ERROR_CHECK(err_code); */
+
+    err_code = app_timer_create(&acc_timer_id, APP_TIMER_MODE_REPEATED, accel_timeout_handler);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -266,28 +336,28 @@ static void advertising_init(void)
 
 
 
-void bas_init(void)
+void acc_init(void)
 {
     uint32_t err_code;
-    ble_bas_init_t bas_init_obj;
+    ble_acc_init_t acc_init_obj;
 
-    memset(&bas_init_obj, 0, sizeof(bas_init_obj));
+    memset(&acc_init_obj, 0, sizeof(acc_init_obj));
 
-    bas_init_obj.evt_handler =          NULL;
-    bas_init_obj.support_notification = true;
-    bas_init_obj.p_report_ref         = NULL;
-    bas_init_obj.initial_batt_level   = 0x33;
+    acc_init_obj.evt_handler =          NULL;
+    acc_init_obj.support_notification = true;
+    acc_init_obj.p_report_ref         = NULL;
+    acc_init_obj.initial_batt_level   = 0x33;
 
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init_obj.battery_level_char_attr_md.cccd_write_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init_obj.battery_level_char_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&bas_init_obj.battery_level_char_attr_md.write_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init_obj.battery_level_report_read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&acc_init_obj.accel_level_char_attr_md.cccd_write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&acc_init_obj.accel_level_char_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&acc_init_obj.accel_level_char_attr_md.write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&acc_init_obj.accel_level_report_read_perm);
 
-    m_bas.is_notification_supported = true;
+    m_acc.is_notification_supported = true;
 
 
     // YOUR_JOB: Add code to initialize the services used by the application.
-    err_code = ble_bas_init(&m_bas, &bas_init_obj);
+    err_code = ble_acc_init(&m_acc, &acc_init_obj);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -295,7 +365,7 @@ void bas_init(void)
  */
 static void services_init(void)
 {
-    bas_init();
+    acc_init();
 }
 
 /**@brief Function for initializing security parameters.
@@ -362,6 +432,8 @@ static void conn_params_init(void)
     cp_init.evt_handler                    = on_conn_params_evt;
     cp_init.error_handler                  = conn_params_error_handler;
 
+
+
     err_code = ble_conn_params_init(&cp_init);
     APP_ERROR_CHECK(err_code);
 }
@@ -371,11 +443,15 @@ static void conn_params_init(void)
 */
 static void timers_start(void)
 {
+    uint32_t err_code;
     /* YOUR_JOB: Start your timers. below is an example of how to start a timer.
     uint32_t err_code;
 
     err_code = app_timer_start(m_app_timer_id, TIMER_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code); */
+
+    err_code = app_timer_start(acc_timer_id, ACC_TIMER_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -510,7 +586,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_conn_params_on_ble_evt(p_ble_evt);
     /*
     YOUR_JOB: Add service ble_evt handlers calls here, like, for example:
-    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+    ble_acc_on_ble_evt(&m_acc, p_ble_evt);
     */
 }
 
@@ -546,6 +622,7 @@ static void ble_stack_init(void)
     err_code = sd_ble_enable(&ble_enable_params);
     APP_ERROR_CHECK(err_code);
 
+
     // Register with the SoftDevice handler module for BLE events.
     err_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
     APP_ERROR_CHECK(err_code);
@@ -553,6 +630,7 @@ static void ble_stack_init(void)
     // Register with the SoftDevice handler module for BLE events.
     err_code = softdevice_sys_evt_handler_set(sys_evt_dispatch);
     APP_ERROR_CHECK(err_code);
+
 }
 
 
@@ -626,6 +704,20 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
+/** @brief Function starting the internal LFCLK XTAL oscillator.
+ */
+// static void lfclk_config(void)
+// {
+//     NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
+//     NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
+//     NRF_CLOCK->TASKS_LFCLKSTART    = 1;
+//     while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0)
+//     {
+//         //Do nothing.
+//     }
+//     NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
+// }
+
 /**@brief Function for application main entry.
  */
 int main(void)
@@ -655,6 +747,10 @@ int main(void)
     simple_uart_putstring((const uint8_t*) "conn init\r\n");
     sec_params_init();
     simple_uart_putstring((const uint8_t*) "sec init\r\n");
+    ext_sensors_init();
+    simple_uart_putstring((const uint8_t*) "ext init\r\n");
+    // lfclk_config();
+    // simple_uart_putstring((const uint8_t*) "lfk init\r\n");
 
     // Start execution
     timers_start();

@@ -445,7 +445,6 @@ Discarded input sections
  .debug_macro   0x00000000      0x242 _build/LIS2DH_app.o
  .debug_macro   0x00000000      0x1d2 _build/LIS2DH_app.o
  .debug_macro   0x00000000     0x746b _build/LIS2DH_app.o
- .debug_macro   0x00000000       0xd0 _build/LIS2DH_app.o
  .debug_macro   0x00000000       0x58 _build/LIS2DH_app.o
  .debug_macro   0x00000000       0x35 _build/LIS2DH_app.o
  .debug_macro   0x00000000       0x9c _build/LIS2DH_app.o
@@ -1165,7 +1164,7 @@ OUTPUT(_build/accel_test_xxaa.out elf32-littlearm)
  .debug_aranges
                 0x000002d8       0x20 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libnosys.a(_exit.o)
 
-.debug_macro    0x00000000     0xb16b
+.debug_macro    0x00000000     0xb23b
  .debug_macro   0x00000000      0x2e3 _build/main.o
  .debug_macro   0x000002e3      0x844 _build/main.o
  .debug_macro   0x00000b27       0x22 _build/main.o
@@ -1230,16 +1229,17 @@ OUTPUT(_build/accel_test_xxaa.out elf32-littlearm)
  .debug_macro   0x0000ab14       0x10 _build/app_scheduler.o
  .debug_macro   0x0000ab24       0x10 _build/app_scheduler.o
  .debug_macro   0x0000ab34      0x1a3 _build/LIS2DH_app.o
- .debug_macro   0x0000acd7       0x1c _build/LIS2DH_app.o
- .debug_macro   0x0000acf3      0x24b _build/app_trace.o
- .debug_macro   0x0000af3e       0x16 _build/app_trace.o
- .debug_macro   0x0000af54       0x52 _build/app_trace.o
- .debug_macro   0x0000afa6       0x18 _build/app_trace.o
- .debug_macro   0x0000afbe       0x1c _build/app_trace.o
- .debug_macro   0x0000afda       0xca _build/app_trace.o
- .debug_macro   0x0000b0a4       0xc7 _build/system_nrf51.o
+ .debug_macro   0x0000acd7       0xd0 _build/LIS2DH_app.o
+ .debug_macro   0x0000ada7       0x1c _build/LIS2DH_app.o
+ .debug_macro   0x0000adc3      0x24b _build/app_trace.o
+ .debug_macro   0x0000b00e       0x16 _build/app_trace.o
+ .debug_macro   0x0000b024       0x52 _build/app_trace.o
+ .debug_macro   0x0000b076       0x18 _build/app_trace.o
+ .debug_macro   0x0000b08e       0x1c _build/app_trace.o
+ .debug_macro   0x0000b0aa       0xca _build/app_trace.o
+ .debug_macro   0x0000b174       0xc7 _build/system_nrf51.o
 
-.debug_str      0x00000000    0x35c22
+.debug_str      0x00000000    0x35c68
  .debug_str     0x00000000    0x33388 _build/main.o
                               0x335ae (size before relaxing)
  .debug_str     0x00033388      0x3e1 _build/nrf_soc.o
@@ -1254,31 +1254,31 @@ OUTPUT(_build/accel_test_xxaa.out elf32-littlearm)
                               0x335e7 (size before relaxing)
  .debug_str     0x000349ca      0x25b _build/app_scheduler.o
                                0x7d81 (size before relaxing)
- .debug_str     0x00034c25       0x96 _build/LIS2DH_app.o
-                              0x30700 (size before relaxing)
- .debug_str     0x00034cbb      0x889 _build/app_trace.o
-                              0x33098 (size before relaxing)
- .debug_str     0x00035544      0x105 _build/system_nrf51.o
+ .debug_str     0x00034c25       0xdc _build/LIS2DH_app.o
+                              0x3072c (size before relaxing)
+ .debug_str     0x00034d01      0x889 _build/app_trace.o
+                              0x330c4 (size before relaxing)
+ .debug_str     0x0003558a      0x105 _build/system_nrf51.o
                               0x2ea9b (size before relaxing)
- .debug_str     0x00035649      0x144 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-atexit.o)
+ .debug_str     0x0003568f      0x144 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-atexit.o)
                                 0x1dd (size before relaxing)
- .debug_str     0x0003578d       0x3d /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-exit.o)
+ .debug_str     0x000357d3       0x3d /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-exit.o)
                                 0x57a (size before relaxing)
- .debug_str     0x000357ca       0xbc /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-fini.o)
+ .debug_str     0x00035810       0xbc /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-fini.o)
                                 0x1d5 (size before relaxing)
- .debug_str     0x00035886       0x96 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-impure.o)
+ .debug_str     0x000358cc       0x96 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-impure.o)
                                 0x571 (size before relaxing)
- .debug_str     0x0003591c       0x8a /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-init.o)
+ .debug_str     0x00035962       0x8a /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-init.o)
                                 0x1ff (size before relaxing)
- .debug_str     0x000359a6       0xba /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-memcpy.o)
+ .debug_str     0x000359ec       0xba /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-memcpy.o)
                                 0x1c7 (size before relaxing)
- .debug_str     0x00035a60       0x42 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-memset.o)
+ .debug_str     0x00035aa6       0x42 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-memset.o)
                                 0x1b4 (size before relaxing)
- .debug_str     0x00035aa2       0x30 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-__atexit.o)
+ .debug_str     0x00035ae8       0x30 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-__atexit.o)
                                 0x5b9 (size before relaxing)
- .debug_str     0x00035ad2       0x70 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-__call_atexit.o)
+ .debug_str     0x00035b18       0x70 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libc.a(lib_a-__call_atexit.o)
                                 0x5d1 (size before relaxing)
- .debug_str     0x00035b42       0xe0 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libnosys.a(_exit.o)
+ .debug_str     0x00035b88       0xe0 /usr/lib/gcc/arm-none-eabi/4.9.3/../../../arm-none-eabi/lib/armv6-m/libnosys.a(_exit.o)
                                  0xe6 (size before relaxing)
 
 .debug_frame    0x00000000     0x1208
