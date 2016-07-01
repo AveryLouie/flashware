@@ -10,6 +10,8 @@
 #include "nrf_delay.h"
 #include "spi_master.h"
 #include "app_error.h"
+#include "app_util_platform.h"
+
 
 void ACCEL_INIT(){
 	uint32_t err_code;
@@ -23,6 +25,7 @@ void ACCEL_INIT(){
 		.SPI_CONFIG_CPOL   = SPI_CONFIG_CPOL_ActiveHigh,
 		.SPI_CONFIG_CPHA   = SPI_CONFIG_CPHA_Leading,
 		.SPI_DisableAllIRQ = 0,
+		.SPI_PriorityIRQ   = APP_IRQ_PRIORITY_LOW,
 	};
 	nrf_gpio_cfg_output(SPI_CS);
 	nrf_gpio_pin_set(SPI_CS);

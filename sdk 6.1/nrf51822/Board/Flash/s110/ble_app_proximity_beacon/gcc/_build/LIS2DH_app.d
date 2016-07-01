@@ -26,4 +26,7 @@ _build/LIS2DH_app.o: \
  ../../../../../Include/spi_master.h \
  ../../../../../Include/app_common/app_error.h \
  /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h \
- ../../../../../Include/s110/nrf_error.h
+ ../../../../../Include/s110/nrf_error.h \
+ ../../../../../Include/sd_common/app_util_platform.h \
+ ../../../../../Include/compiler_abstraction.h \
+ ../../../../../Include/nrf51.h

@@ -72,7 +72,7 @@
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_MAX_TIMERS            4                                           /**< Maximum number of simultaneously created timers. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
-#define ACC_TIMER_INTERVAL              9                                          /**< Number of RTC ticks till next accel meas */
+#define ACC_TIMER_INTERVAL              APP_TIMER_TICKS(2000,APP_TIMER_PRESCALER)                        /**< Number of RTC ticks till next accel meas */
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(500, UNIT_1_25_MS)            /**< Minimum acceptable connection interval (0.5 seconds). */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(1000, UNIT_1_25_MS)           /**< Maximum acceptable connection interval (1 second). */
@@ -114,6 +114,140 @@ static ble_acc_t m_acc;          //accelerometer service ID structure
 static app_timer_id_t acc_timer_id; //accelerometer timer
 volatile uint16_t xyz[3];
 
+
+
+//from console.c
+void uart_put_dec32bit(uint32_t ww)  // ww is in the range [0 4294967295]
+{
+    uint8_t ww0;
+    uint8_t ww1;
+    uint8_t ww2;
+    uint8_t ww3;
+    uint8_t ww4;
+    uint8_t ww5;
+    uint8_t ww6;
+    uint8_t ww7;
+    uint8_t ww8;
+
+    if ( 1 )
+    {
+        ww0 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 429496729]
+
+        ww1 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 42949672]
+
+        ww2 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 4294967]
+
+        ww3 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 429496]
+
+        ww4 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 42949]
+
+        ww5 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 4294]
+
+        ww6 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 429]
+
+        ww7 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 42]
+
+        ww8 = (ww % 10); // Remainder of ww when divided by 10
+        ww /= 10;        // forces ww into the range [0 4]
+
+
+        if (ww != 0)
+        {
+            simple_uart_put((uint8_t)ww + '0');  /* We may safely cast ww to the smaller type, as we have */
+                                                  /* made sure (above) that its value will fit. */
+            simple_uart_put(ww8 + '0');
+            simple_uart_put(ww7 + '0');
+            simple_uart_put(ww6 + '0');
+            simple_uart_put(ww5 + '0');
+            simple_uart_put(ww4 + '0');
+            simple_uart_put(ww3 + '0');
+            simple_uart_put(ww2 + '0');
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else if (ww8 != 0)
+        {
+            simple_uart_put(ww8 + '0');
+            simple_uart_put(ww7 + '0');
+            simple_uart_put(ww6 + '0');
+            simple_uart_put(ww5 + '0');
+            simple_uart_put(ww4 + '0');
+            simple_uart_put(ww3 + '0');
+            simple_uart_put(ww2 + '0');
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else if (ww7 != 0)
+        {
+            simple_uart_put(ww7 + '0');
+            simple_uart_put(ww6 + '0');
+            simple_uart_put(ww5 + '0');
+            simple_uart_put(ww4 + '0');
+            simple_uart_put(ww3 + '0');
+            simple_uart_put(ww2 + '0');
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else if (ww6 != 0)
+        {
+            simple_uart_put(ww6 + '0');
+            simple_uart_put(ww5 + '0');
+            simple_uart_put(ww4 + '0');
+            simple_uart_put(ww3 + '0');
+            simple_uart_put(ww2 + '0');
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else if (ww5 != 0)
+        {
+            simple_uart_put(ww5 + '0');
+            simple_uart_put(ww4 + '0');
+            simple_uart_put(ww3 + '0');
+            simple_uart_put(ww2 + '0');
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else if (ww4 != 0)
+        {
+            simple_uart_put(ww4 + '0');
+            simple_uart_put(ww3 + '0');
+            simple_uart_put(ww2 + '0');
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else if (ww3 != 0)
+        {
+            simple_uart_put(ww3 + '0');
+            simple_uart_put(ww2 + '0');
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else if (ww2 != 0)
+        {
+            simple_uart_put(ww2 + '0');
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else if (ww1 != 0)
+        {
+            simple_uart_put(ww1 + '0');
+            simple_uart_put(ww0 + '0');
+        }
+        else
+        {
+            simple_uart_put(ww0 + '0');
+        }
+    }
+}
+
 // Persistent storage system event handler
 void pstorage_sys_event_handler (uint32_t p_evt);
 
@@ -142,6 +276,11 @@ void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t * p
     // On assert, the system can only recover with a reset.
     simple_uart_putstring((const uint8_t*) "app error\r\n");
     simple_uart_putstring(p_file_name);
+    simple_uart_putstring((const uint8_t*) "\r\n");
+    uart_put_dec32bit(line_num);
+    simple_uart_putstring((const uint8_t*) "\r\n");
+    uart_put_dec32bit(error_code);
+    simple_uart_putstring((const uint8_t*) "\r\n");
     NVIC_SystemReset();
 }
 
@@ -182,6 +321,7 @@ static void accel_timeout_handler(void* p_context)
 {
     update_xyz(xyz);
     ble_acc_accel_level_update(&m_acc, xyz[1]);
+    uart_put_dec32bit((uint32_t)xyz[1]);
     UNUSED_PARAMETER(p_context);
     simple_uart_putstring((const uint8_t*) "acc\r\n");
 }
@@ -189,47 +329,19 @@ static void accel_timeout_handler(void* p_context)
 
 static void ext_sensors_init(void)
 {
-    simple_uart_putstring((const uint8_t*) "acc1\r\n");
     ACCEL_INIT();
-    simple_uart_putstring((const uint8_t*) "acc2\r\n");
-    //     while(reg_write_ver(CTRL_REG1, 0x97)!=1){
-    //     simple_uart_putstring((const uint8_t*)"retrying cr1 tx\r\n");
-    // }//0b10010111//0b01110111
-    // nrf_delay_ms(10);
-    // top = reg_read(CTRL_REG1);
-    // simple_uart_putstring((const uint8_t *)"\r\ncr1 ");
-    // uart_put_decbyte(top);
+    
+    while(reg_write_ver(CTRL_REG1, 0x97)!=1){
+        simple_uart_putstring((const uint8_t*)"retrying cr1 tx\r\n");
+    }
 
-    // while(reg_write_ver(CTRL_REG2, 0x80)!=1){
-    //     simple_uart_putstring((const uint8_t*)"retrying cr2 tx\r\n");
-    // }//10000000
-    // nrf_delay_ms(10);
-    // top = reg_read(CTRL_REG2);
-    // simple_uart_putstring((const uint8_t *)"\r\ncr2 ");
-    // uart_put_decbyte(top);
+    while(reg_write_ver(CTRL_REG2, 0x80)!=1){
+        simple_uart_putstring((const uint8_t*)"retrying cr2 tx\r\n");
+    }
 
-    // nrf_delay_ms(10);
-    // top = reg_read(CTRL_REG3);
-    // simple_uart_putstring((const uint8_t *)"\r\ncr3 ");
-    // uart_put_decbyte(top);
-
-    // while(reg_write_ver(CTRL_REG4, 0x08)!=1){
-    //     simple_uart_putstring((const uint8_t*)"retrying cr4 tx\r\n");
-    // }//0b00000000
-    // nrf_delay_ms(10);
-    // top = reg_read(CTRL_REG4);
-    // simple_uart_putstring((const uint8_t *)"\r\ncr4 ");
-    // uart_put_decbyte(top);
-
-    // nrf_delay_ms(10);
-    // top = reg_read(CTRL_REG5);
-    // simple_uart_putstring((const uint8_t *)"\r\ncr5 ");
-    // uart_put_decbyte(top);
-
-    // nrf_delay_ms(10);
-    // top = reg_read(CTRL_REG6);
-    // simple_uart_putstring((const uint8_t *)"\r\ncr6 ");
-    // uart_put_decbyte(top);
+    while(reg_write_ver(CTRL_REG4, 0x08)!=1){
+        simple_uart_putstring((const uint8_t*)"retrying cr4 tx\r\n");
+    }
 
     accel_timeout_handler(NULL);
 }
