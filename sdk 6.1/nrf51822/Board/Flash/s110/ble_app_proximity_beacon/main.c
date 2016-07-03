@@ -248,6 +248,12 @@ void uart_put_dec32bit(uint32_t ww)  // ww is in the range [0 4294967295]
     }
 }
 
+//utility function to swap upper and lower bytes of a uint16_t
+uint16_t swapbytes(uint16_t swapper)
+{
+    return (swapper>>8) | ((swapper & 0xFF) << 8);
+}
+
 // Persistent storage system event handler
 void pstorage_sys_event_handler (uint32_t p_evt);
 
@@ -320,7 +326,7 @@ static void service_error_handler(uint32_t nrf_error)
 static void accel_timeout_handler(void* p_context)
 {
     update_xyz(xyz);
-    ble_acc_accel_level_update(&m_acc, xyz[1]);
+    ble_acc_accel_level_update(&m_acc, swapbytes(xyz[1]));
     uart_put_dec32bit((uint32_t)xyz[1]);
     UNUSED_PARAMETER(p_context);
     simple_uart_putstring((const uint8_t*) "acc\r\n");

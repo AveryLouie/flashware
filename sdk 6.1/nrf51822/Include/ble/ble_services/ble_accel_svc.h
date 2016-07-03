@@ -70,7 +70,7 @@ typedef struct
     ble_acc_evt_handler_t         evt_handler;                    /**< Event handler to be called for handling events in the accel Service. */
     bool                          support_notification;           /**< TRUE if notification of accel Level measurement is supported. */
     ble_srv_report_ref_t *        p_report_ref;                   /**< If not NULL, a Report Reference descriptor with the specified value will be added to the accel Level characteristic */
-    uint8_t                       initial_batt_level;             /**< Initial accel level */
+    uint16_t                      initial_batt_level;             /**< Initial accel level */
     ble_srv_cccd_security_mode_t  accel_level_char_attr_md;     /**< Initial security level for accel characteristics attribute */
     ble_gap_conn_sec_mode_t       accel_level_report_read_perm; /**< Initial security level for accel report read attribute */
 } ble_acc_init_t;
@@ -82,7 +82,7 @@ typedef struct ble_acc_s
     uint16_t                      service_handle;                 /**< Handle of accel Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t      accel_level_handles;          /**< Handles related to the accel Level characteristic. */
     uint16_t                      report_ref_handle;              /**< Handle of the Report Reference descriptor. */
-    uint8_t                       accel_level_last;             /**< Last accel Level measurement passed to the accel Service. */
+    uint16_t                      accel_level_last;             /**< Last accel Level measurement passed to the accel Service. */
     uint16_t                      conn_handle;                    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection). */
     bool                          is_notification_supported;      /**< TRUE if notification of accel Level is supported. */
     uint8_t                       uuid_type;                      //where the custom uuid reference lives
@@ -127,7 +127,7 @@ void ble_acc_on_ble_evt(ble_acc_t * p_acc, ble_evt_t * p_ble_evt);
  *
  * @return      NRF_SUCCESS on success, otherwise an error code.
  */
-uint32_t ble_acc_accel_level_update(ble_acc_t * p_acc, uint8_t accel_level);
+uint32_t ble_acc_accel_level_update(ble_acc_t * p_acc, uint16_t accel_level);
 
 #endif // BLE_ACC_H__
 

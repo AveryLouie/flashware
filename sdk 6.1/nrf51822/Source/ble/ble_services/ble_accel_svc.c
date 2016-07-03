@@ -127,6 +127,7 @@ static uint32_t accel_level_char_add(ble_acc_t * p_acc, const ble_acc_init_t * p
     ble_gatts_attr_md_t attr_md;
     // ble_gatts_attr_md_t attr_md_2;
     ble_gatts_attr_md_t user_desc_md;
+    ble_gatts_char_pf_t  accel_pf;
     uint8_t             initial_accel_level;
     uint8_t             encoded_report_ref[BLE_SRV_ENCODED_REPORT_REF_LEN];
     uint8_t             init_len;
@@ -150,6 +151,11 @@ static uint32_t accel_level_char_add(ble_acc_t * p_acc, const ble_acc_init_t * p
     // BLE_GAP_CONN_SEC_MODE_SET_OPEN(&user_desc_md.write_perm);
     user_desc_md.vloc = BLE_GATTS_VLOC_STACK;
 
+    memset(&accel_pf, 0, sizeof(accel_pf));
+    accel_pf.format    = BLE_GATT_CPF_FORMAT_UINT16;
+    accel_pf.exponent  = 0;
+    accel_pf.unit      = 0x2713; //acceleration data
+
     memset(&char_md, 0, sizeof(char_md));
 
     char_md.char_props.read   = 1;
@@ -158,7 +164,7 @@ static uint32_t accel_level_char_add(ble_acc_t * p_acc, const ble_acc_init_t * p
     char_md.p_char_user_desc  = user_desc;
     char_md.char_user_desc_max_size = 6;
     char_md.char_user_desc_size = 6;
-    char_md.p_char_pf         = NULL;
+    char_md.p_char_pf         = &accel_pf;
     char_md.p_user_desc_md    = &user_desc_md;
     char_md.p_cccd_md         = (p_acc->is_notification_supported) ? &cccd_md : NULL;
     char_md.p_sccd_md         = NULL;
@@ -183,9 +189,9 @@ static uint32_t accel_level_char_add(ble_acc_t * p_acc, const ble_acc_init_t * p
 
     attr_char_value.p_uuid    = &ble_uuid;
     attr_char_value.p_attr_md = &attr_md;
-    attr_char_value.init_len  = sizeof(uint8_t);
+    attr_char_value.init_len  = sizeof(uint16_t);
     attr_char_value.init_offs = 0;
-    attr_char_value.max_len   = sizeof(uint8_t);
+    attr_char_value.max_len   = sizeof(uint16_t);
     attr_char_value.p_value   = &initial_accel_level;
 
     err_code = sd_ble_gatts_characteristic_add(p_acc->service_handle, &char_md,
@@ -274,13 +280,13 @@ uint32_t ble_acc_init(ble_acc_t * p_acc, const ble_acc_init_t * p_acc_init)
 }
 
 
-uint32_t ble_acc_accel_level_update(ble_acc_t * p_acc, uint8_t accel_level)
+uint32_t ble_acc_accel_level_update(ble_acc_t * p_acc, uint16_t accel_level)
 {
     uint32_t err_code = NRF_SUCCESS;
 
     if (accel_level != p_acc->accel_level_last)
     {
-        uint16_t len = sizeof(uint8_t);
+        uint16_t len = sizeof(uint16_t);
 
         // Save new accel value
         p_acc->accel_level_last = accel_level;
@@ -289,7 +295,7 @@ uint32_t ble_acc_accel_level_update(ble_acc_t * p_acc, uint8_t accel_level)
         err_code = sd_ble_gatts_value_set(p_acc->accel_level_handles.value_handle,
                                           0,
                                           &len,
-                                          &accel_level);
+                                          (uint8_t*)&accel_level);
         if (err_code != NRF_SUCCESS)
         {
             return err_code;
@@ -307,7 +313,7 @@ uint32_t ble_acc_accel_level_update(ble_acc_t * p_acc, uint8_t accel_level)
             hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
             hvx_params.offset = 0;
             hvx_params.p_len  = &len;
-            hvx_params.p_data = &accel_level;
+            hvx_params.p_data = (uint8_t*)&accel_level;
 
             err_code = sd_ble_gatts_hvx(p_acc->conn_handle, &hvx_params);
         }
